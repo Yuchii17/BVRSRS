@@ -46,7 +46,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true
     }
 }));
 
@@ -489,14 +490,13 @@ app.get("/complaintChart", isLogin, (req, res) => res.render("complaintChart", {
 
 app.get("/design", isLogin, myReq, isAnn, (req, res) => res.render("design", { layout: "design", title: "Design", activePage: "design" }));
 
-// const RECAPTCHA_SECRET_KEY = "6Lc40cErAAAAAPTdXe2opWftvAKYPbUxA0VzDsxk";
+const RECAPTCHA_SECRET_KEY = "6Lc40cErAAAAAPTdXe2opWftvAKYPbUxA0VzDsxk";
 
 app.post("/login", async (req, res) => {
     try {
-        const { username, password /*, "g-recaptcha-response": recaptchaToken */ } = req.body;
+        const { username, password , "g-recaptcha-response": recaptchaToken  } = req.body;
 
-        /*
-        // Ensure reCAPTCHA token exists
+        
         if (!recaptchaToken) {
             console.log("No reCAPTCHA token received");
             return res.render("index", { error: "Please complete the reCAPTCHA." });
@@ -513,7 +513,6 @@ app.post("/login", async (req, res) => {
         if (!recaptchaResponse.data.success) {
             return res.render("index", { error: "reCAPTCHA verification failed. Please try again." });
         }
-        */
 
         // 🔹 Fetch user from the database
         const user = await db.collection("resident").findOne({ username: { $regex: new RegExp(`^${username}$`, "i") } });
