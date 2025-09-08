@@ -495,7 +495,6 @@ app.post("/login", async (req, res) => {
     try {
         const { username, password /*, "g-recaptcha-response": recaptchaToken */ } = req.body;
 
-        // 🔹 Temporarily disable reCAPTCHA
         /*
         // Ensure reCAPTCHA token exists
         if (!recaptchaToken) {
@@ -538,8 +537,7 @@ app.post("/login", async (req, res) => {
             return res.render("index", { error: "Account Suspended!" });
         }
 
-        // 🔹 Set session data if login is successful
-        req.session.userId = user._id;
+        req.session.userId = user._id.toString(); // store as string
         req.session.access = user.access;
 
         console.log("Session set:", req.session);
