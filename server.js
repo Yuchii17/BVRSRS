@@ -15,7 +15,8 @@ const nodemailer = require('nodemailer');
 
 
 
-const SECRET_KEY = "6LflzO4qAAAAAF4n0ABQ2YyHGPSA3RDjvtvFt1AQ";
+const SECRET_KEY = "6Lc40cErAAAAAPTdXe2opWftvAKYPbUxA0VzDsxk";
+// localhost 6LflzO4qAAAAAF4n0ABQ2YyHGPSA3RDjvtvFt1AQ
 
 const fs = require('fs');
 const uploadDir = 'public/uploads';
