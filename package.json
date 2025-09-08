@@ -2,10 +2,10 @@
   "name": "bvrsrs-v1",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "create.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node create.js",
+    "dev": "nodemon create.js"
   },
   "keywords": [],
   "author": "",
