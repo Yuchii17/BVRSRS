@@ -489,18 +489,21 @@ app.get("/complaintChart", isLogin, (req, res) => res.render("complaintChart", {
 
 app.get("/design", isLogin, myReq, isAnn, (req, res) => res.render("design", { layout: "design", title: "Design", activePage: "design" }));
 
-const RECAPTCHA_SECRET_KEY = "6Lc40cErAAAAAPTdXe2opWftvAKYPbUxA0VzDsxk"; // Replace with your actual reCAPTCHA Secret Key
+// const RECAPTCHA_SECRET_KEY = "6Lc40cErAAAAAPTdXe2opWftvAKYPbUxA0VzDsxk";
+
 app.post("/login", async (req, res) => {
     try {
-        const { username, password, "g-recaptcha-response": recaptchaToken } = req.body;
+        const { username, password /*, "g-recaptcha-response": recaptchaToken */ } = req.body;
 
-        // 🔹 Ensure reCAPTCHA token exists
+        // 🔹 Temporarily disable reCAPTCHA
+        /*
+        // Ensure reCAPTCHA token exists
         if (!recaptchaToken) {
             console.log("No reCAPTCHA token received");
             return res.render("index", { error: "Please complete the reCAPTCHA." });
         }
 
-        // 🔹 Verify reCAPTCHA with Google
+        // Verify reCAPTCHA with Google
         const verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
         const recaptchaResponse = await axios.post(verifyUrl, null, {
             params: { secret: RECAPTCHA_SECRET_KEY, response: recaptchaToken },
@@ -511,6 +514,7 @@ app.post("/login", async (req, res) => {
         if (!recaptchaResponse.data.success) {
             return res.render("index", { error: "reCAPTCHA verification failed. Please try again." });
         }
+        */
 
         // 🔹 Fetch user from the database
         const user = await db.collection("resident").findOne({ username: { $regex: new RegExp(`^${username}$`, "i") } });
@@ -549,6 +553,7 @@ app.post("/login", async (req, res) => {
         return res.render("index", { error: "An error occurred. Please try again later."});
     }
 });
+
 
 app.post("/login2", async (req, res) => { 
     try {
