@@ -11,15 +11,15 @@
     </head>
     <% businesses.forEach(business => { %>
 <div id="editFormContainer" class="abstractBG borderRadius20 unseen">
-    <form action="/update-business/<%= business._id %>" method="POST" class="flex col alignStart">
-        <p class="size50 str400">UPDATE BUSINESS</p>
+    <form action="/update-business/<%= business._id %>" method="POST" class="flex col alignStart" style="width: 40%; padding: 50px;">
+        <p class="size40 str400">UPDATE BUSINESS</p>
 
         <!-- Business Name -->
         <label for="businessName">Business Name</label>
         <input type="text" id="businessName" name="businessName" required>
 
         <!-- Business Type -->
-        <label for="businessType">Business Type</label>
+        <label for="businessType">Established Date</label>
         <input type="date" id="estDate" name="estDate" required>
 
         <!-- Business Type -->
@@ -28,19 +28,20 @@
 
         <!-- Owner Name -->
         <label for="ownerName">Owner Name</label>
-        <input type="text" id="ownerName" name="ownerName" required>
+        <div class="selectBar widthMax100">
+            <select name="ownerName" id="ownerNameSelect" required>
+                <% if (residents && residents.length > 0) { %>
+                    <% residents.forEach((resident) => { %>
+                        <option value="<%= resident._id %>" <%= business.ownerName == resident._id ? 'selected' : '' %>>
+                            <%= resident.firstName %> <%= resident.middleName %> <%= resident.lastName %>
+                        </option>
+                    <% }) %>
+                <% } else { %>
+                    <option disabled>No residents found</option>
+                <% } %>
+            </select>
+        </div>
 
-        <!-- Contact Number -->
-        <label for="contactNumber">Contact Number</label>
-        <input type="text" id="contactNumber" name="contactNumber" required>
-
-        <!-- House No -->
-        <label for="houseNo">House No</label>
-        <input type="text" id="houseNo" name="houseNo" required>
-
-        <!-- Purok -->
-        <label for="purok">Purok</label>
-        <input type="text" id="purok" name="purok" required>
 
         <br>
         <div class="height0 gap5">
@@ -51,27 +52,33 @@
 </div>
 <% }) %>
 
-<!-- JavaScript to Populate and Display the Edit Form -->
-<script>
-    function editBusiness(id, businessName, businessType, ownerName, contactNumber, houseNo, purok) {
-        // Populate the form fields with the business data
-        document.getElementById("businessName").value = businessName;
-        document.getElementById("businessType").value = businessType;
-        document.getElementById("ownerName").value = ownerName;
-        document.getElementById("contactNumber").value = contactNumber;
-        document.getElementById("houseNo").value = houseNo;
-        document.getElementById("purok").value = purok;
 
-        // Show the form by adding 'seen' and removing 'unseen'
-        document.getElementById("editFormContainer").classList.remove('unseen');
-        document.getElementById("editFormContainer").classList.add('seen');
+
+
+<script>
+    function closeEditForm() {
+        document.getElementById('editFormContainer').classList.add('unseen');
     }
 
-    // Function to close the edit form
-    function closeEditForm() {
-        // Hide the form by adding 'unseen' and removing 'seen'
-        document.getElementById("editFormContainer").classList.remove('seen');
-        document.getElementById("editFormContainer").classList.add('unseen');
+    function editBusiness(id, businessName, businessType, ownerId, contactNumber, houseNo, purok) {
+        const formContainer = document.getElementById('editFormContainer');
+        formContainer.classList.remove('unseen');
+
+        const form = formContainer.querySelector('form');
+        form.action = `/update-business/${id}`;
+
+        document.getElementById('businessName').value = businessName;
+        document.getElementById('estDate').value = estDate; // This is the corrected line
+        document.getElementById('businessType').value = businessType;
+
+        // Find and set the correct owner in the select dropdown
+        const ownerSelect = document.getElementById('ownerNameSelect');
+        for (let i = 0; i < ownerSelect.options.length; i++) {
+            if (ownerSelect.options[i].value === ownerId) {
+                ownerSelect.selectedIndex = i;
+                break;
+            }
+        }
     }
 </script>
 
@@ -226,7 +233,7 @@
                                     <a href="/viewBus/<%= business._id %>" class="nav">
                                         <i class="fas fa-eye"></i> Permit
                                     </a>
-                                    <a href="javascript:void()" class="nav" onclick="editBusiness('<%= business._id %>', '<%= business.businessName %>', '<%= business.businessType %>', '<%= business.ownerName %>', '<%= business.contactNumber %>', '<%= business.houseNo %>', '<%= business.purok %>')">
+                                    <a href="javascript:void()" class="nav" onclick="editBusiness('<%= business._id %>', '<%= business.businessName %>', '<%= business.businessType %>', '<%= new Date(business.estDate).toISOString().split('T')[0] %>', '<%= business.ownerName %>', '<%= business.contactNumber %>', '<%= business.houseNo %>', '<%= business.purok %>')">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="/delete-business/<%= business._id %>" method="POST" onsubmit="return confirm('Are you sure you want to archive this business?');" class="vers">
